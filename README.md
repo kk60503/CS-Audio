@@ -1,4 +1,3 @@
-# CS-Audio-Course
+# CS Audio Course
 
-This is my readme. Nothing works because I haven't built anything and don't 
-really know how to.
+A repo for weird and wild noises made in B. Massey's audio software course 
