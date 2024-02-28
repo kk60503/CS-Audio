@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 '''NOTE: Runs a little loud!'''
 
 from scipy import signal
@@ -42,7 +43,7 @@ def echomorph(input):
     A = np.min(input)
     B = np.max(input)
     clipped = np.clip(normald, (A*0.4), (B*0.4))
-    '''Kinda like using min/max instead of abs. peak, ears could be biased'''
+    '''Kinda like using min/max instead of abs peak, ears could be biased'''
     #clipped = np.clip(normald, (-0.4*peak), (0.4*peak))
     
     sos = signal.iirfilter(4, 0.03, btype='highpass', ftype='butter', output='sos')
@@ -66,9 +67,11 @@ Probably just need to do some converting, but like result from wave
 '''Main'''
 samples, sample_rate = read_wav(infile)
 result = np.array(samples)
+'''Play unadultered .wav file'''
 sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
 
 for i in range(9):
     result = echomorph(result)
+    '''PLay mutated .wav file'''
     sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
   

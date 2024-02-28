@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
+'''This is Emorph, or little Echomorph. I kinda like Emorph. It has it's own voice with a trailing echo.'''
+
 from scipy import signal
-import scipy.io.wavfile
+#import scipy.io.wavfile
 import sounddevice as sd
 import numpy as np
 import wave
@@ -25,27 +27,19 @@ def echomorph(input):
         peak = A
 
     multiplier = 2 - peak
-    print(A)
-    print(B)
-    print(multiplier)
-    print('\n')
     
     clipped = np.clip(input, (A*0.4), (B*0.4))
-    #scipy.io.wavfile.write(("clipped.wav"), sample_rate, clipped.astype(np.float32))
     
     sos = signal.iirfilter(4, 0.0333, btype='highpass', ftype='butter', output='sos')
     filtered = signal.sosfilt(sos, clipped)
     
     amped = filtered * multiplier
-    #scipy.io.wavfile.write(("amped.wav"), sample_rate, amped.astype(np.float32))
-    
     mixed = mix(amped, input)
-    
     result = mixed * 0.7
-    
     return result
 
 
+'''Main'''
 with wave.open(infile, "rb") as w:
     assert w.getnchannels() == 1
     assert w.getsampwidth() == 2
@@ -56,10 +50,10 @@ with wave.open(infile, "rb") as w:
     sample_rate = w.getframerate()
 
 result = np.array(samples)
-
+'''Play unadultered .wav file'''
 sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
 
 for i in range(9):
     result = echomorph(result)
+    '''Play each mutation of .wav file'''
     sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
-    #scipy.io.wavfile.write(("test" + str(i) + ".wav"), sample_rate, result.astype(np.float32))
