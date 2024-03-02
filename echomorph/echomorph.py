@@ -3,7 +3,7 @@
 '''NOTE: Runs a little loud!'''
 
 from scipy import signal
-#import scipy.io.wavfile
+import scipy.io.wavfile as scifile
 import sounddevice as sd
 import numpy as np
 import wave
@@ -46,32 +46,32 @@ def echomorph(input):
     '''Kinda like using min/max instead of abs peak, ears could be biased'''
     #clipped = np.clip(normald, (-0.4*peak), (0.4*peak))
     
-    sos = signal.iirfilter(4, 0.03, btype='highpass', ftype='butter', output='sos')
+    '''Original filter that I found not as harsh'''
+    #sos = signal.iirfilter(4, 0.03, btype='highpass', ftype='butter', output='sos')
+
+    sos = signal.iirfilter(8, 0.085, btype='highpass', ftype='butter', output='sos')
     filtered = signal.sosfilt(sos, clipped)
 
     filt_peak = np.max(np.abs(filtered)) 
     normalized = normalize(filtered, filt_peak)
     
     mixed = mix(normalized, input)
-    result = mixed * 0.7
+    result = (mixed * 0.7)
     return result
 
-
-'''
-Did not have good luck with scipy read-in instead of wave read-in; 
-Very loud and disorted
-Probably just need to do some converting, but like result from wave
-'''
-#sample_rate, samples = scipy.io.wavfile.read(infile)
 
 '''Main'''
 samples, sample_rate = read_wav(infile)
 result = np.array(samples)
 '''Play unadultered .wav file'''
-sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
+#sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
+wav_file = result
 
 for i in range(9):
     result = echomorph(result)
     '''PLay mutated .wav file'''
-    sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
+    #sd.play(data=(result.astype(np.float32)), samplerate=sample_rate, blocking=True)
+    wav_file = np.append(wav_file, result)
+
+scifile.write("echomorph.wav", sample_rate, wav_file.astype(np.float32))
   

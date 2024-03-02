@@ -17,8 +17,8 @@ amplitude = 0.25 * (np.iinfo(np.int16).max)
 
 # create sine wave, convert to 16-bit and write to file
 samples = amplitude * np.sin(2. * np.pi * fs * t)
-out_samples = np.round(samples * 32767).astype(np.int16)
-scipy.io.wavfile.write("sine.wav", samp_rate, out_samples.astype(np.int16))
+#out_samples = np.round(samples * 32767).astype(np.int16)
+scipy.io.wavfile.write("sine.wav", samp_rate, samples.astype(np.int16))
 
 # clip sine wave, convert to 16-bit and write to file
 clip_amplitude = 2 * amplitude
