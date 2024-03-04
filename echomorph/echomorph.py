@@ -4,7 +4,7 @@
 
 from scipy import signal
 import scipy.io.wavfile as scifile
-import sounddevice as sd
+#import sounddevice as sd
 import numpy as np
 import wave
 import struct
