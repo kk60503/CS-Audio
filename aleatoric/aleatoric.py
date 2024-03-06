@@ -20,11 +20,12 @@ G = 784
 A5 = 880
 scale = [A4, B, C, D, E, F, G, A5]
 samp_rate = 48000 # samples per second
-bps = 3.67
-# time linspace
+bps = 3.67 # 220 bpm
+'''time linspace'''
 t = np.linspace(0., 1., samp_rate)
 
 
+'''return trimmed-down sin wave of randomly selected note in scale'''
 def ret_sin():
     fs = random.choice(scale)
     ret_samples = sin_amp * np.sin(2. * np.pi * fs * t)
@@ -34,7 +35,7 @@ def ret_sin():
     ret_samples = np.append(mid_samples, micro_split[1])
     return ret_samples
 
-
+'''create trimmed-down square wave of root note and append with 7 random notes'''
 def for_loop(sin_samples, sqr_samples):
     split_samples = np.hsplit(sqr_samples, 4)
     micro_split = np.hsplit(sqr_samples, 100)
@@ -54,11 +55,13 @@ sqr_amp = 0.75 * (np.iinfo(np.int16).max)
 
 sqr_samples = sqr_amp * signal.square(2. * np.pi * A4 * t)
 
+'''write first two instances of loop to file'''
 a_file = for_loop(sin_samples, sqr_samples)
 b_file = for_loop(sin_samples, sqr_samples)
 wav_file = np.append(a_file, b_file)
 scifile.write("aleatoric.wav", samp_rate, wav_file.astype(np.int16))
 
+'''endless loop that plays each iteration'''
 print("\npress ctrl + c to quit, or ctrl + break if using Windows")
 loop_on = True
 while loop_on is True:
