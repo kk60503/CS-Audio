@@ -101,13 +101,77 @@ private:
 };
 
 //==============================================================================
+template <typename Type>
+class Distortion
+{
+public:
+    //==============================================================================
+    Distortion()
+    {
+        auto& waveshaper = processorChain.template get<waveshaperIndex>();         // [5]
+        waveshaper.functionToUse = [] (Type x)
+                                   {
+                                       // soft
+//                                       return std::tanh (x);
+//                                       // hard
+//                                       return juce::jlimit (Type (-0.1), Type (0.1), x); // [6]
+                                       // fuzz?
+                                       return juce::jlimit (Type (-0.7), Type (0.7), (std::tanh (x)));
+                                   };
+
+       auto& preGain = processorChain.template get<preGainIndex>();   // [5]
+       preGain.setGainDecibels (40.0f);                               // [6]
+
+       auto& postGain = processorChain.template get<postGainIndex>(); // [7]
+       postGain.setGainDecibels (-10.0f);                             // [8]
+    }
+
+    //==============================================================================
+    void prepare (const juce::dsp::ProcessSpec& spec)
+    {
+        auto& filter = processorChain.template get<filterIndex>();                      // [3]
+        filter.state = FilterCoefs::makeFirstOrderHighPass (spec.sampleRate, 4000.0f);  // [4]
+ 
+        processorChain.prepare (spec);
+    }
+
+    //==============================================================================
+    template <typename ProcessContext>
+    void process (const ProcessContext& context) noexcept
+    {
+        processorChain.process (context); // [7]
+    }
+
+    //==============================================================================
+    void reset() noexcept 
+    {
+        processorChain.reset();
+    }
+
+private:
+    //==============================================================================
+    enum
+    {
+        filterIndex,        // [2]
+        preGainIndex,    // [2]
+        waveshaperIndex,
+        postGainIndex    // [3]
+    };
+    using Filter = juce::dsp::IIR::Filter<Type>;
+    using FilterCoefs = juce::dsp::IIR::Coefficients<Type>;
+ 
+    juce::dsp::ProcessorChain<juce::dsp::ProcessorDuplicator<Filter, FilterCoefs>,
+                              juce::dsp::Gain<Type>, juce::dsp::WaveShaper<Type>, juce::dsp::Gain<Type>> processorChain;
+};
+
+//==============================================================================
 class Voice  : public juce::MPESynthesiserVoice
 {
 public:
     Voice()
     {
         auto& masterGain = processorChain.get<masterGainIndex>();
-        masterGain.setGainLinear (0.7f);
+        masterGain.setGainLinear (0.2f);
         
         // Ladder Filter
         //auto& filter = processorChain.get<filterIndex>();
@@ -207,11 +271,13 @@ private:
         
         // Ladder Filter
         // filterIndex,
+        
+        //waveshaperIndex,
         masterGainIndex
     };
 
     juce::dsp::ProcessorChain<CustomOscillator<float>, CustomOscillator<float>,
-                                   juce::dsp::Gain<float>> processorChain;
+           /* juce::dsp::WaveShaper<float>,*/ juce::dsp::Gain<float>> processorChain;
 
     static constexpr size_t lfoUpdateRate = 100;
     size_t lfoUpdateCounter = lfoUpdateRate;
@@ -266,21 +332,23 @@ public:
         /** Sets the volume (between 0 and 1) of the LFO modulating the phaser all-pass
             filters.
         */
-        BLPhaser.setDepth(0.1);
+        BLPhaser.setDepth(0.2);
     
         /** Sets the centre frequency (in Hz) of the phaser all-pass filters modulation.
         */
-        BLPhaser.setCentreFrequency(1000);
+        BLPhaser.setCentreFrequency(300);
     
         /** Sets the feedback volume (between -1 and 1) of the phaser. Negative can be
             used to get specific phaser sounds.
         */
-        BLPhaser.setFeedback(-0.2ss);
+        BLPhaser.setFeedback(-0.2);
     
         /** Sets the amount of dry and wet signal in the output of the phaser (between 0
             for full dry and 1 for full wet).
         */
         BLPhaser.setMix(0.5);
+        
+        disto1.prepare(spec);
     }
 
 private:
@@ -296,6 +364,7 @@ private:
         reverb.process(contextToUse);
         //fxChain.process (contextToUse);// fxChainreverb
         BLPhaser.process(contextToUse);
+        disto1.process(contextToUse);
     }
     
     // fxChain reverb
@@ -307,6 +376,7 @@ private:
     juce::dsp::Reverb reverb;
 //    juce::dsp::ProcessorChain<juce::dsp::Reverb> fxChain; // fxChainreverb
     juce::dsp::Phaser<float> BLPhaser;
+    Distortion<float> disto1;
 };
 
 //==============================================================================
