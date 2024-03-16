@@ -242,7 +242,18 @@ public:
         for (auto* v : voices)
             dynamic_cast<Voice*> (v)->prepare (spec);
         
-        fxChain.prepare (spec); //reverb
+        juce::dsp::Reverb::Parameters reverbParameters;
+        reverbParameters.dryLevel = 0.2;
+        reverbParameters.wetLevel = 0.1;
+        reverbParameters.roomSize = 0.9; // 0 small to 1 big
+        reverbParameters.damping = 0.9; // 0…1 1=damped
+        reverbParameters.width = 0.9; // 0…1 1=very wide
+        reverbParameters.freezeMode = 0.4; // 0…1 1=frrrrozzenn
+        reverb.setParameters(reverbParameters);
+        
+        reverb.prepare(spec);
+        
+        //fxChain.prepare (spec); //reverb
         
         BLPhaser.prepare(spec);
         
@@ -280,16 +291,20 @@ private:
         auto block = juce::dsp::AudioBlock<float> (outputAudio);
         auto blockToUse = block.getSubBlock ((size_t) startSample, (size_t) numSamples);
         auto contextToUse = juce::dsp::ProcessContextReplacing<float> (blockToUse);
-        fxChain.process (contextToUse); // reverb
+        
+        reverb.process(contextToUse);
+        //fxChain.process (contextToUse);// fxChainreverb
         BLPhaser.process(contextToUse);
     }
     
-    enum
-    {
-        reverbIndex // reverb
-    };
+    // fxChain reverb
+//    enum
+//    {
+//        reverbIndex // reverb
+//    };
  
-    juce::dsp::ProcessorChain<juce::dsp::Reverb> fxChain; //reverb
+    juce::dsp::Reverb reverb;
+//    juce::dsp::ProcessorChain<juce::dsp::Reverb> fxChain; // fxChainreverb
     juce::dsp::Phaser<float> BLPhaser;
 };
 
@@ -588,7 +603,7 @@ private:
             addAndMakeVisible (midiKeyboardComponent);
             addAndMakeVisible (scopeComponent);
 
-            setSize (400, 300);
+            setSize (800, 400);
 
             auto area = getLocalBounds();
             scopeComponent.setTopLeftPosition (0, 80);
