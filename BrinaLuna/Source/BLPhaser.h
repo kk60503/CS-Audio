@@ -23,11 +23,12 @@
 
  BEGIN_JUCE_PIP_METADATA
 
- name:             DSPIntroductionTutorial
+ name:            Brina Luna Synth
  version:          1.0.0
- vendor:           JUCE
+ vendor:           Fern Hands
  website:          http://juce.com
- description:      Explores the DSP module.
+ description:      Explores the DSP module by implementing phaser, reverb and distortion effects.
+            Based on a JUCE DSP tutorial.
 
  dependencies:     juce_audio_basics, juce_audio_devices, juce_audio_formats,
                    juce_audio_plugin_client, juce_audio_processors,
@@ -36,7 +37,7 @@
  exporters:        xcode_mac, vs2019, linux_make
 
  type:             AudioProcessor
- mainClass:        DSPTutorialAudioProcessor
+ mainClass:        BrinaLunaAudioProcessor
 
  useLocalCopy:     1
 
@@ -54,8 +55,8 @@ class CustomOscillator
 public:
     //==============================================================================
     CustomOscillator() {
-        auto& osc = processorChain.template get<oscIndex>();        // [5]
-        osc.initialise ([] (Type x) { return std::sin (x); }, 128); // [6]
+        auto& osc = processorChain.template get<oscIndex>();      
+        osc.initialise ([] (Type x) { return std::sin (x); }, 128);
     }
 
     //==============================================================================
@@ -274,7 +275,7 @@ public:
         /** Sets the feedback volume (between -1 and 1) of the phaser. Negative can be
             used to get specific phaser sounds.
         */
-        BLPhaser.setFeedback(0);
+        BLPhaser.setFeedback(-0.2ss);
     
         /** Sets the amount of dry and wet signal in the output of the phaser (between 0
             for full dry and 1 for full wet).
@@ -517,11 +518,11 @@ private:
 };
 
 //==============================================================================
-class DSPTutorialAudioProcessor  : public juce::AudioProcessor
+class BrinaLunaAudioProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    DSPTutorialAudioProcessor()
+    BrinaLunaAudioProcessor()
          : AudioProcessor (BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true))
     {}
 
@@ -563,7 +564,7 @@ public:
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override
     {
-        return new DSPTutorialAudioProcessorEditor (*this);
+        return new BrinaLunaAudioProcessorEditor (*this);
     }
 
     bool hasEditor() const override                                        { return true; }
@@ -592,10 +593,10 @@ public:
 
 private:
     //==============================================================================
-    class DSPTutorialAudioProcessorEditor  : public juce::AudioProcessorEditor
+    class BrinaLunaAudioProcessorEditor  : public juce::AudioProcessorEditor
     {
     public:
-        DSPTutorialAudioProcessorEditor (DSPTutorialAudioProcessor& p)
+        BrinaLunaAudioProcessorEditor (BrinaLunaAudioProcessor& p)
             : AudioProcessorEditor (&p),
               dspProcessor (p),
               scopeComponent (dspProcessor.getAudioBufferQueue())
@@ -613,7 +614,7 @@ private:
             midiKeyboardState.addListener (&dspProcessor.getMidiMessageCollector());
         }
 
-        ~DSPTutorialAudioProcessorEditor() override
+        ~BrinaLunaAudioProcessorEditor() override
         {
             midiKeyboardState.removeListener (&dspProcessor.getMidiMessageCollector());
         }
@@ -632,12 +633,12 @@ private:
 
     private:
         //==============================================================================
-        DSPTutorialAudioProcessor& dspProcessor;
+        BrinaLunaAudioProcessor& dspProcessor;
         juce::MidiKeyboardState midiKeyboardState;
         juce::MidiKeyboardComponent midiKeyboardComponent { midiKeyboardState, juce::MidiKeyboardComponent::horizontalKeyboard };
         ScopeComponent<float> scopeComponent;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DSPTutorialAudioProcessorEditor)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BrinaLunaAudioProcessorEditor)
     };
 
     //==============================================================================
@@ -646,5 +647,5 @@ private:
     AudioBufferQueue<float> audioBufferQueue;
     ScopeDataCollector<float> scopeDataCollector { audioBufferQueue };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DSPTutorialAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BrinaLunaAudioProcessor)
 };
