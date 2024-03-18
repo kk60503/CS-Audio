@@ -65,14 +65,14 @@ public:
     void setFrequency (Type newValue, bool force = false)
     {
         auto& osc = processorChain.template get<oscIndex>();
-        osc.setFrequency (newValue, force);     // [7]
+        osc.setFrequency (newValue, force);
     }
 
     //==============================================================================
     void setLevel (Type newValue)
     {
         auto& gain = processorChain.template get<gainIndex>();
-        gain.setGainLinear (newValue);          // [8]
+        gain.setGainLinear (newValue);
     }
 
     //==============================================================================
@@ -88,7 +88,7 @@ public:
     //==============================================================================
     void prepare (const juce::dsp::ProcessSpec& spec)
     {
-        processorChain.prepare (spec); // [3]
+        processorChain.prepare (spec);
     }
 
 private:
@@ -96,10 +96,10 @@ private:
     enum
     {
         oscIndex,
-        gainIndex   // [2]
+        gainIndex
     };
  
-    juce::dsp::ProcessorChain<juce::dsp::Oscillator<Type>, juce::dsp::Gain<Type>> processorChain; // [1]
+    juce::dsp::ProcessorChain<juce::dsp::Oscillator<Type>, juce::dsp::Gain<Type>> processorChain;
 };
 
 //==============================================================================
@@ -110,29 +110,29 @@ public:
     //==============================================================================
     Distortion()
     {
-        auto& waveshaper = processorChain.template get<waveshaperIndex>();         // [5]
+        auto& waveshaper = processorChain.template get<waveshaperIndex>();
         waveshaper.functionToUse = [] (Type x)
                                    {
                                        // soft
 //                                       return std::tanh (x);
 //                                       // hard
-//                                       return juce::jlimit (Type (-0.1), Type (0.1), x); // [6]
-                                       // fuzz?
+//                                       return juce::jlimit (Type (-0.1), Type (0.1), x);
+                                       // fuzz(?)
                                        return juce::jlimit (Type (-0.65), Type (0.65), (std::tanh ((std::tanh (x)))));
                                    };
 
-       auto& preGain = processorChain.template get<preGainIndex>();   // [5]
-       preGain.setGainDecibels (50.0f);                               // [6]
+       auto& preGain = processorChain.template get<preGainIndex>();
+       preGain.setGainDecibels (50.0f);
 
-       auto& postGain = processorChain.template get<postGainIndex>(); // [7]
-       postGain.setGainDecibels (-12.0f);                             // [8]
+       auto& postGain = processorChain.template get<postGainIndex>();
+       postGain.setGainDecibels (-12.0f);
     }
 
     //==============================================================================
     void prepare (const juce::dsp::ProcessSpec& spec)
     {
-        auto& filter = processorChain.template get<filterIndex>();                      // [3]
-        filter.state = FilterCoefs::makeFirstOrderHighPass (spec.sampleRate, 4000.0f);  // [4]
+        auto& filter = processorChain.template get<filterIndex>();
+        filter.state = FilterCoefs::makeFirstOrderHighPass (spec.sampleRate, 4000.0f);
  
         processorChain.prepare (spec);
     }
@@ -141,7 +141,7 @@ public:
     template <typename ProcessContext>
     void process (const ProcessContext& context) noexcept
     {
-        processorChain.process (context); // [7]
+        processorChain.process (context);
     }
 
     //==============================================================================
@@ -154,10 +154,10 @@ private:
     //==============================================================================
     enum
     {
-        filterIndex,        // [2]
-        preGainIndex,    // [2]
+        filterIndex,
+        preGainIndex,
         waveshaperIndex,
-        postGainIndex    // [3]
+        postGainIndex
     };
     using Filter = juce::dsp::IIR::Filter<Type>;
     using FilterCoefs = juce::dsp::IIR::Coefficients<Type>;
@@ -177,7 +177,7 @@ public:
         
         // Ladder Filter
         //auto& filter = processorChain.get<filterIndex>();
-        //filter.setCutoffFrequencyHz (1000.0f);          // [3]
+        //filter.setCutoffFrequencyHz (1000.0f);
         //filter.setResonance (0.7f);
         
         // Second LFO
@@ -192,7 +192,7 @@ public:
         processorChain.prepare (spec);
         
         // Second LFO
-        //lfo.prepare ({ spec.sampleRate / lfoUpdateRate, spec.maximumBlockSize, spec.numChannels }); // [4]
+        //lfo.prepare ({ spec.sampleRate / lfoUpdateRate, spec.maximumBlockSize, spec.numChannels });
         
     }
 
@@ -205,7 +205,7 @@ public:
         processorChain.get<osc1Index>().setFrequency (freqHz, true);
         processorChain.get<osc1Index>().setLevel (velocity);
 
-        processorChain.get<osc2Index>().setFrequency (freqHz * 1.01f, true);    // [3]
+        processorChain.get<osc2Index>().setFrequency (freqHz * 1.01f, true);
         processorChain.get<osc2Index>().setLevel (velocity);
     }
 
@@ -250,9 +250,9 @@ public:
                 lfoUpdateCounter = lfoUpdateRate;
                 
                 // Second LFO
-                //auto lfoOut = lfo.processSample (0.0f);                                 // [5]
-                //auto curoffFreqHz = juce::jmap (lfoOut, -1.0f, 1.0f, 100.0f, 2000.0f);  // [6]
-                //processorChain.get<filterIndex>().setCutoffFrequencyHz (curoffFreqHz);  // [7]
+                //auto lfoOut = lfo.processSample (0.0f);
+                //auto curoffFreqHz = juce::jmap (lfoOut, -1.0f, 1.0f, 100.0f, 2000.0f);
+                //processorChain.get<filterIndex>().setCutoffFrequencyHz (curoffFreqHz);
             }
         }
 
@@ -285,7 +285,7 @@ private:
     size_t lfoUpdateCounter = lfoUpdateRate;
     
     // Second LFO
-    //juce::dsp::Oscillator<float> lfo;   // [1]
+    //juce::dsp::Oscillator<float> lfo;  
 };
 
 //==============================================================================
@@ -311,6 +311,9 @@ public:
         for (auto* v : voices)
             dynamic_cast<Voice*> (v)->prepare (spec);
         
+        
+        // Comment out to disable reverb
+        //----------------------------------------------------------
         juce::dsp::Reverb::Parameters reverbParameters;
         reverbParameters.dryLevel = 0.2;
         reverbParameters.wetLevel = 0.1;
@@ -321,9 +324,10 @@ public:
         reverb.setParameters(reverbParameters);
         
         reverb.prepare(spec);
+        //----------------------------------------------------------
         
-        //fxChain.prepare (spec); //reverb
-        
+        // Comment out to disable phaser
+        //----------------------------------------------------------
         BLPhaser.prepare(spec);
         
         /** Sets the rate (in Hz) of the LFO modulating the phaser all-pass filters. This
@@ -349,8 +353,12 @@ public:
             for full dry and 1 for full wet).
         */
         BLPhaser.setMix(0.5);
+        //----------------------------------------------------------
         
+        // Comment out to disable distortion
+        //----------------------------------------------------------
         disto1.prepare(spec);
+        //----------------------------------------------------------
     }
 
 private:
@@ -363,23 +371,19 @@ private:
         auto blockToUse = block.getSubBlock ((size_t) startSample, (size_t) numSamples);
         auto contextToUse = juce::dsp::ProcessContextReplacing<float> (blockToUse);
         
+        
+        // Comment any of these lines and accompanying lines below to disable
+        //    effects
+        //----------------------------------------------------------
         reverb.process(contextToUse);
-        //fxChain.process (contextToUse);// fxChainreverb
         BLPhaser.process(contextToUse);
         disto1.process(contextToUse);
     }
-//    
-//     fxChain reverb
-//    enum
-//    {
-//        reverbIndex // reverb
-//    };
- 
-  
-//    juce::dsp::ProcessorChain<juce::dsp::Reverb> fxChain; // fxChainreverb
+
     juce::dsp::Reverb reverb;
     juce::dsp::Phaser<float> BLPhaser;
     Distortion<float> disto1;
+    //----------------------------------------------------------
 };
 
 //==============================================================================
