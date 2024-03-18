@@ -14,7 +14,7 @@ the plugin has only been built and tested as a standalone plugin (currently).
 
 NOTE: It is assumed that the user has installed the JUCE software.
 
-For building the plugin:
+**For building the plugin:**</br>
 Please install JUCE software and familiarize with the Projucer application.
 The Projucer will allow the user to choose which option (Xtools/VS Code/Makefile)
 to edit and build the synth with. User should be able to build and open the 
