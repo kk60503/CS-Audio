@@ -1,5 +1,7 @@
 # Brina Luna
 
+Kyle Klein
+
 A synth plugin meant to serve as my introduction to the JUCE framework/software.
 
 Originally intended to be a phaser audio plugin, the project pivoted toward using
