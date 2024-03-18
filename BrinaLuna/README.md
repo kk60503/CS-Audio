@@ -24,7 +24,7 @@ The Phaser.h and Phaser.cpp file have been edited for this project. The one smal
 difference is the change in line 202 of the Phaser.h file:
 
 The <code>static constexpr int numStages = 6;</code> was changed to 4:
-<code>static constexpr int numStages = 4;</code>
+<code>static constexpr int numStages = 4;</code> </br>
 This comes down to user preference and is optional.
 
 The plugin currently has some issues with popping and crackling if using the 
