@@ -7,7 +7,8 @@ a JUCE tutorial for DSP and reverse engineering it to implement and tweak a phas
 effect. Reverb and distortion effects were added subsequently.
 
 The standalone plugin has (currently) only been tested by building with Xtools and 
-briefly using an old synth connected via USB for external MIDI. The project should
+briefly using an old synth connected via USB for external MIDI. **It appears the
+executable file is still building as** <code>DSPIntroductionTutorial</code> The project should
 be able to be opened and built with (Microsoft) VS Code and a Linux Makefile.
 While it may be possible to build the plugin as VST3, AU, etc., please note that
 the plugin has only been built and tested as a standalone plugin (currently).
