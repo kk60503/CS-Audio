@@ -116,14 +116,14 @@ public:
 //                                       // hard
 //                                       return juce::jlimit (Type (-0.1), Type (0.1), x); // [6]
                                        // fuzz?
-                                       return juce::jlimit (Type (-0.7), Type (0.7), (std::tanh (x)));
+                                       return juce::jlimit (Type (-0.65), Type (0.65), (std::tanh ((std::tanh (x)))));
                                    };
 
        auto& preGain = processorChain.template get<preGainIndex>();   // [5]
-       preGain.setGainDecibels (40.0f);                               // [6]
+       preGain.setGainDecibels (50.0f);                               // [6]
 
        auto& postGain = processorChain.template get<postGainIndex>(); // [7]
-       postGain.setGainDecibels (-10.0f);                             // [8]
+       postGain.setGainDecibels (-12.0f);                             // [8]
     }
 
     //==============================================================================
@@ -366,15 +366,16 @@ private:
         BLPhaser.process(contextToUse);
         disto1.process(contextToUse);
     }
-    
-    // fxChain reverb
+//    
+//     fxChain reverb
 //    enum
 //    {
 //        reverbIndex // reverb
 //    };
  
-    juce::dsp::Reverb reverb;
+  
 //    juce::dsp::ProcessorChain<juce::dsp::Reverb> fxChain; // fxChainreverb
+    juce::dsp::Reverb reverb;
     juce::dsp::Phaser<float> BLPhaser;
     Distortion<float> disto1;
 };
