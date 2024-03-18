@@ -20,7 +20,8 @@ The Projucer will allow the user to choose which option (Xtools/VS Code/Makefile
 to edit and build the synth with. User should be able to build and open the 
 standalone plugin from their chosen editor/environment.
 
-The Phaser.h and Phaser.cpp file have been edited for this project. The one small 
+The Phaser.h and Phaser.cpp file have been edited for this project. They have been
+included for documentation purposes and are not necessary. The one small 
 difference is the change in line 202 of the Phaser.h file:
 
 The <code>static constexpr int numStages = 6;</code> was changed to 4:
