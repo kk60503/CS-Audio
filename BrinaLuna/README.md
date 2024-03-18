@@ -25,6 +25,7 @@ difference is the change in line 202 of the Phaser.h file:
 
 The <code>static constexpr int numStages = 6;</code> was changed to 4:
 <code>static constexpr int numStages = 4;</code>
+This comes down to user preference and is optional.
 
 The plugin currently has some issues with popping and crackling if using the 
 reverb and distortion effects together. The distortion is not quite to the point
