@@ -20,5 +20,9 @@ The Projucer will allow the user to choose which option (Xtools/VS Code/Makefile
 to edit and build the synth with. User should be able to build and open the 
 standalone plugin from their chosen editor/environment.
 
+The plugin currently has some issues with popping and crackling if using the 
+reverb and distortion effects together. The distortion is not quite to the point
+of adequacy. Phaser + reverb is adequate and enjoyable. Efforts will be made for
+improved audio and greater GUI options for effect controls.
 
 **Licensing information available in LICENSE.txt**
