@@ -1,6 +1,8 @@
 /*
   ==============================================================================
 
+  Original Copyright from JUCE (code has been altered):
+  
    This file is part of the JUCE tutorials.
    Copyright (c) 2020 - Raw Material Software Limited
 
@@ -28,7 +30,7 @@
  vendor:           Fern Hands
  website:          http://juce.com
  description:      Explores the DSP module by implementing phaser, reverb and distortion effects.
-            Based on a JUCE DSP tutorial.
+                    Based on a JUCE DSP tutorial.
 
  dependencies:     juce_audio_basics, juce_audio_devices, juce_audio_formats,
                    juce_audio_plugin_client, juce_audio_processors,
