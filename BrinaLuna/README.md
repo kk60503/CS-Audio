@@ -20,6 +20,12 @@ The Projucer will allow the user to choose which option (Xtools/VS Code/Makefile
 to edit and build the synth with. User should be able to build and open the 
 standalone plugin from their chosen editor/environment.
 
+The Phaser.h and Phaser.cpp file have been edited for this project. The one small 
+difference is the change in line 202 of the Phaser.h file:
+
+The <code>static constexpr int numStages = 6;</code> was changed to 4:
+<code>static constexpr int numStages = 4;</code>
+
 The plugin currently has some issues with popping and crackling if using the 
 reverb and distortion effects together. The distortion is not quite to the point
 of adequacy. Phaser + reverb is adequate and enjoyable. Efforts will be made for
